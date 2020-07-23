@@ -1,4 +1,4 @@
-package com.circle;
+package com.circle.resources;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.skife.jdbi.v2.DBI;
