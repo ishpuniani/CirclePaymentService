@@ -25,6 +25,6 @@ public class ServiceApplication extends Application<ServiceConfiguration> {
         env.jersey().register(new TransactionResource(dbi));
 
         // Registering JobExecutionService to run background jobs
-        env.lifecycle().manage(new JobExecutionService());
+        env.lifecycle().manage(new JobExecutionService(dbi));
     }
 }

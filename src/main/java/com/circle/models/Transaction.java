@@ -133,7 +133,7 @@ public class Transaction {
         }
 
         @JsonCreator
-        public Status getStatus(String value) {
+        public static Status getStatus(String value) {
             return lookup.get(value);
         }
     }

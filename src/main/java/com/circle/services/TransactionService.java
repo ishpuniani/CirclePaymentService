@@ -10,34 +10,67 @@ import org.skife.jdbi.v2.exceptions.DBIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Singleton Service class that implements DB interaction for the "transactions" table
+ */
 public class TransactionService {
     private final static Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
     private final DBI dbi;
+    private static TransactionService transactionService = null;
 
-    public TransactionService(DBI dbi) {
+    private TransactionService(DBI dbi) {
         this.dbi = dbi;
     }
 
-    public Transaction getTransaction(String id) {
+    public static TransactionService getInstance(DBI dbi) {
+        if(transactionService == null) {
+            transactionService = new TransactionService(dbi);
+        }
+        return transactionService;
+    }
+
+    public Transaction getTransaction(UUID id) {
         logger.info("Getting transaction info for ID: " + id);
         String query = "SELECT * from transactions WHERE id = ?";
         Handle handle = dbi.open();
         try {
-            Map<String, Object> map = handle.createQuery(query).bind(0, UUID.fromString(id)).first();
+            Map<String, Object> result = handle.createQuery(query).bind(0, id).first();
             ObjectMapper objectMapper = new ObjectMapper();
-            logger.info("Read Map:: " + map);
-            Transaction transaction = objectMapper.convertValue(map, Transaction.class);
+            Transaction transaction = objectMapper.convertValue(result, Transaction.class);
             objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
             handle.close();
+            if (transaction == null) {
+                throw new IllegalArgumentException("Unable to find transaction by ID: " + id);
+            }
             return transaction;
         } catch (Exception exception) {
             logger.error("Unable to find transaction, pleases check the transaction id", exception.getCause());
             throw exception;
         }
+    }
+
+    public List<Transaction> getTransactionsByStatus(Transaction.Status status) {
+        List<Transaction> transactions = new ArrayList<>();
+        String query = "SELECT * from transactions WHERE STATUS = ?";
+        Handle handle = dbi.open();
+        try {
+            List<Map<String, Object>> results = handle.createQuery(query).bind(0, status.getValue()).list();
+            ObjectMapper objectMapper = new ObjectMapper();
+            for(Map<String, Object> row : results) {
+                Transaction transaction = objectMapper.convertValue(row, Transaction.class);
+                transactions.add(transaction);
+            }
+        } catch (Exception exception) {
+            logger.error("Unable to find transactions, pleases check the status", exception.getCause());
+            throw exception;
+        }
+        return transactions;
     }
 
     public Transaction addTransaction(Transaction transaction) {
@@ -52,6 +85,19 @@ public class TransactionService {
                     transaction.getStatus().getValue(),
                     transaction.getCreated_at()));
             return transaction;
+        } catch (DBIException exception) {
+            logger.error("Unable to create account!", exception.getCause());
+            throw exception;
+        }
+    }
+
+    public void update(Transaction transaction) {
+        logger.info("Updating transaction [{}] to DB", transaction);
+        try {
+            String query = "UPDATE transactions set status=? WHERE id=?";
+            dbi.useHandle(handle -> handle.execute(query,
+                    transaction.getStatus().getValue(),
+                    transaction.getId()));
         } catch (DBIException exception) {
             logger.error("Unable to create account!", exception.getCause());
             throw exception;

@@ -12,8 +12,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,14 +28,14 @@ public class TransactionResource {
     private final TransactionService transactionService;
 
     public TransactionResource(DBI dbi) {
-        transactionService = new TransactionService(dbi);
+        transactionService = TransactionService.getInstance(dbi);
     }
 
     @GET
     @Path("/{id}")
     public Response getTransaction(@PathParam(("id")) String id) {
         try {
-            Transaction transaction = transactionService.getTransaction(id);
+            Transaction transaction = transactionService.getTransaction(UUID.fromString(id));
             return Response
                     .ok()
                     .type(MediaType.APPLICATION_JSON)
@@ -48,8 +50,25 @@ public class TransactionResource {
         }
     }
 
+    @GET
+    public Response getTransactionByStatus(@QueryParam(("status")) String status) {
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsByStatus(Transaction.Status.valueOf(status.toUpperCase()));
+            return Response
+                    .ok()
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(transactions)
+                    .build();
+        } catch (Exception e) {
+            return Response
+                    .serverError()
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity("\"ErrorMessage\":\"" + e.getMessage() + "\"")
+                    .build();
+        }
+    }
+
     @POST
-//    public Response addTransaction(TransactionRequest transactionRequest) {
     public Response addTransaction(Map<String, Object> transactionRequest) {
         try {
 
@@ -57,9 +76,6 @@ public class TransactionResource {
             Transaction transaction = new Transaction(UUID.fromString((String) transactionRequest.get("senderId")),
                     UUID.fromString((String) transactionRequest.get("receiverId")),
                     (Double) transactionRequest.get("amount"));
-            /*Transaction transaction = new Transaction(transactionRequest.getSenderId(),
-                    transactionRequest.getReceiverId(),
-                    transactionRequest.getAmount());*/
 
             logger.info(transaction.toString());
             Transaction savedTransaction = transactionService.addTransaction(transaction);

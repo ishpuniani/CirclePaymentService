@@ -13,8 +13,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -25,7 +27,7 @@ public class AccountResource {
     private final AccountService accountService;
 
     public AccountResource(DBI dbi) {
-        this.accountService = new AccountService(dbi);
+        this.accountService = AccountService.getInstance(dbi);
     }
 
     /**
@@ -37,7 +39,25 @@ public class AccountResource {
     @Path("/{id}")
     public Response getAccount(@PathParam("id") String id) {
         try {
-            Account account = accountService.getAccount(id);
+            Account account = accountService.getAccount(UUID.fromString(id));
+            return Response
+                    .ok()
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(account)
+                    .build();
+        } catch (Exception e) {
+            return Response
+                    .serverError()
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity("\"ErrorMessage\":\"" + e.getMessage() + "\"")
+                    .build();
+        }
+    }
+
+    @GET
+    public Response getAccountByEmail(@QueryParam("email") String email) {
+        try {
+            Account account = accountService.getAccountByEmail(email);
             return Response
                     .ok()
                     .type(MediaType.APPLICATION_JSON)
