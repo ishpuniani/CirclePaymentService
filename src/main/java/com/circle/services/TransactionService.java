@@ -46,13 +46,10 @@ public class TransactionService {
             String query = "INSERT INTO transactions(id, sender_id, receiver_id, amount, status, created_at) VALUES (?,?,?,?,?,?)";
             dbi.useHandle(handle -> handle.execute(query,
                     transaction.getId(),
-//                    transaction.getSenderId(),
                     transaction.getSender_id(),
-//                    transaction.getReceiverId(),
                     transaction.getReceiver_id(),
                     transaction.getAmount(),
                     transaction.getStatus().getValue(),
-//                    transaction.getCreatedAt()));
                     transaction.getCreated_at()));
             return transaction;
         } catch (DBIException exception) {

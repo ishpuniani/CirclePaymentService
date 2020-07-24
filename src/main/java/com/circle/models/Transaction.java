@@ -1,8 +1,12 @@
 package com.circle.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Transaction {
@@ -91,54 +95,6 @@ public class Transaction {
         this.created_at = created_at;
     }
 
-    /*  public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getSenderId() {
-        return sender_id;
-    }
-
-    public void setSenderId(UUID sender_id) {
-        this.sender_id = sender_id;
-    }
-
-    public UUID getReceiverId() {
-        return receiver_id;
-    }
-
-    public void setReceiverId(UUID receiver_id) {
-        this.receiver_id = receiver_id;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Date getCreatedAt() {
-        return created_at;
-    }
-
-    public void setCreatedAt(Date created_at) {
-        this.created_at = created_at;
-    }*/
-
     @Override
     public String toString() {
         return "Transaction{" +
@@ -153,18 +109,32 @@ public class Transaction {
 
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     public enum Status {
-        PENDING(0),
-        DONE(1),
-        FAILED(2);
+        PENDING("PENDING"),
+        DONE("DONE"),
+        FAILED("FAILED");
 
-        private final int value;
+        private final String value;
+        // Reverse-lookup map for getting a day from an abbreviation
+        private static final Map<String, Status> lookup = new HashMap<String, Status>();
 
-        private Status(int value) {
+        static {
+            for (Status s : Status.values()) {
+                lookup.put(s.getValue(), s);
+            }
+        }
+
+        private Status(String value) {
             this.value = value;
         }
 
-        public int getValue() {
+        @JsonValue
+        public String getValue() {
             return value;
+        }
+
+        @JsonCreator
+        public Status getStatus(String value) {
+            return lookup.get(value);
         }
     }
 }
