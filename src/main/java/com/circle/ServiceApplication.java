@@ -1,6 +1,8 @@
 package com.circle;
 
+import com.circle.resources.AccountResource;
 import com.circle.resources.TimeResource;
+import com.circle.resources.TransactionResource;
 import io.dropwizard.Application;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Environment;
@@ -19,6 +21,8 @@ public class ServiceApplication extends Application<ServiceConfiguration> {
 
         // Register our sole resource
         env.jersey().register(new TimeResource(dbi));
+        env.jersey().register(new AccountResource(dbi));
+        env.jersey().register(new TransactionResource(dbi));
 
         // Registering JobExecutionService to run background jobs
         env.lifecycle().manage(new JobExecutionService());

@@ -22,7 +22,8 @@ public class JobExecutionService implements Managed {
     @Override
     public void start() throws Exception {
         System.out.println("Starting jobs");
-        service.scheduleAtFixedRate(new HelloWorldJob(), 1, 1, TimeUnit.MINUTES);
+//        service.scheduleAtFixedRate(new HelloWorldJob(), start interval, duration, TimeUnit.MINUTES);
+        service.scheduleAtFixedRate(new HelloWorldJob(), 30, 30, TimeUnit.SECONDS);
     }
 
     @Override
