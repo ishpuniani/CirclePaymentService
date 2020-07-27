@@ -125,4 +125,19 @@ public class TransactionService {
             throw exception;
         }
     }
+
+    /**
+     * Function to clear table transactions.
+     * used solely for tests
+     */
+    public void clearTable() {
+        logger.info("Emptying table transactions");
+        try {
+            String query = "truncate table transactions";
+            dbi.useHandle(handle -> handle.execute(query));
+        } catch (DBIException exception) {
+            logger.error("Unable to empty transactions table", exception.getCause());
+            throw exception;
+        }
+    }
 }

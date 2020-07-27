@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Account {
@@ -83,5 +84,23 @@ public class Account {
                 ", balance=" + balance +
                 ", createdAt=" + created_at +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Account account = (Account) o;
+        return Double.compare(account.balance, balance) == 0 &&
+                id.equals(account.id) &&
+                name.equals(account.name) &&
+                email.equals(account.email) &&
+                created_at.equals(account.created_at);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, balance, created_at);
     }
 }

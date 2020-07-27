@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Transaction {
@@ -105,6 +106,25 @@ public class Transaction {
                 ", status=" + status +
                 ", created_at=" + created_at +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Transaction that = (Transaction) o;
+        return Double.compare(that.amount, amount) == 0 &&
+                id.equals(that.id) &&
+                sender_id.equals(that.sender_id) &&
+                receiver_id.equals(that.receiver_id) &&
+                status == that.status &&
+                created_at.equals(that.created_at);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, sender_id, receiver_id, amount, status, created_at);
     }
 
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)

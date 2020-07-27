@@ -127,4 +127,19 @@ public class AccountService {
             throw exception;
         }
     }
+
+    /**
+     * Function to clear table accounts.
+     * used solely for tests
+     */
+    public void clearTable() {
+        logger.info("Emptying table accounts");
+        try {
+            String query = "truncate table accounts cascade";
+            dbi.useHandle(handle -> handle.execute(query));
+        } catch (DBIException exception) {
+            logger.error("Unable to empty accounts table", exception.getCause());
+            throw exception;
+        }
+    }
 }
