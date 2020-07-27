@@ -31,6 +31,11 @@ public class TransactionResource {
         transactionService = TransactionService.getInstance(dbi);
     }
 
+    /**
+     * API to get transaction information by ID
+     * @param id ID of the transaction
+     * @return JSON object containing the transaction information.
+     */
     @GET
     @Path("/{id}")
     public Response getTransaction(@PathParam(("id")) String id) {
@@ -50,6 +55,11 @@ public class TransactionResource {
         }
     }
 
+    /**
+     * API to get transactions by status.
+     * @param status Status of transaction: Failed/Pending/Done
+     * @return JSON object containing transactions information.
+     */
     @GET
     public Response getTransactionByStatus(@QueryParam(("status")) String status) {
         try {
@@ -68,6 +78,11 @@ public class TransactionResource {
         }
     }
 
+    /**
+     * API to add transactions to the queue.
+     * @param transactionRequest API body containing the sender account, receiver account and the amount needed to be transferred.
+     * @return Response with success if transaction successfully added or error message in case of failure.
+     */
     @POST
     public Response addTransaction(Map<String, Object> transactionRequest) {
         try {

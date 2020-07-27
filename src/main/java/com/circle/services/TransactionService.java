@@ -35,6 +35,11 @@ public class TransactionService {
         return transactionService;
     }
 
+    /**
+     * Function to get transaction information by ID.
+     * @param id uuid of the transaction.
+     * @return transaction object with the corresponding ID
+     */
     public Transaction getTransaction(UUID id) {
         logger.info("Getting transaction info for ID: " + id);
         String query = "SELECT * from transactions WHERE id = ?";
@@ -55,6 +60,11 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Function to get transactions by status.
+     * @param status status of transaction(pending/done/failed).
+     * @return list of transaction objects of the input status.
+     */
     public List<Transaction> getTransactionsByStatus(Transaction.Status status) {
         List<Transaction> transactions = new ArrayList<>();
         String query = "SELECT * from transactions WHERE STATUS = ?";
@@ -73,6 +83,11 @@ public class TransactionService {
         return transactions;
     }
 
+    /**
+     * Function to add transaction to the transactions table.
+     * @param transaction transaction object to be added.
+     * @return transaction object that has been added.
+     */
     public Transaction addTransaction(Transaction transaction) {
         logger.info("Writing new transaction [{}] to DB", transaction);
         try {
@@ -91,6 +106,10 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Function to update transaction information in the transactions table.
+     * @param transaction Object to be updated by ID. Only status can be updated at the moment.
+     */
     public void update(Transaction transaction) {
         logger.info("Updating transaction [{}] to DB", transaction);
         try {

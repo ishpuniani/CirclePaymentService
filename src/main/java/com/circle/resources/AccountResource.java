@@ -54,6 +54,11 @@ public class AccountResource {
         }
     }
 
+    /**
+     * API to get account info by email id.
+     * @param email email id for which account details are required.
+     * @return response having a JSON object for the account.
+     */
     @GET
     public Response getAccountByEmail(@QueryParam("email") String email) {
         try {

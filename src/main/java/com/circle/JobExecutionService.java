@@ -1,6 +1,5 @@
 package com.circle;
 
-import com.circle.jobs.HelloWorldJob;
 import com.circle.jobs.ProcessTransactionsJob;
 import io.dropwizard.lifecycle.Managed;
 import org.skife.jdbi.v2.DBI;
@@ -28,8 +27,6 @@ public class JobExecutionService implements Managed {
     @Override
     public void start() throws Exception {
         System.out.println("Starting jobs");
-//        service.scheduleAtFixedRate(new HelloWorldJob(), start interval, duration, TimeUnit.MINUTES);
-//        service.scheduleAtFixedRate(new HelloWorldJob(), 30, 30, TimeUnit.SECONDS);
         service.scheduleAtFixedRate(new ProcessTransactionsJob(dbi), 30, 30, TimeUnit.SECONDS);
     }
 

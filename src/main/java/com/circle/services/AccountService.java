@@ -34,6 +34,11 @@ public class AccountService {
         return accountService;
     }
 
+    /**
+     * Function to get account information by ID.
+     * @param id uuid ID of the account.
+     * @return account object with the corresponding ID.
+     */
     public Account getAccount(UUID id) {
         logger.info("Getting account info for ID: " + id);
         String query = "SELECT * from accounts WHERE id = ?";
@@ -55,6 +60,11 @@ public class AccountService {
         }
     }
 
+    /**
+     * Function to get account by email.
+     * @param email email id of the account.
+     * @return account object with the corresponding email id.
+     */
     public Account getAccountByEmail(String email) {
         logger.info("Getting account info for email: " + email);
         String query = "SELECT * from accounts WHERE email = ?";
@@ -75,6 +85,11 @@ public class AccountService {
         }
     }
 
+    /**
+     * Function to add account with the given details.
+     * @param account account object to be added to the table "accounts".
+     * @return account object added to the table.
+     */
     public Account addAccount(Account account) {
         logger.info("Writing new account [{}] to DB", account);
         try {
@@ -92,6 +107,10 @@ public class AccountService {
         }
     }
 
+    /**
+     * Function to update account details in the table "accounts".
+     * @param account account object to be updated.
+     */
     public void update(Account account) {
         logger.info("Updating account [{}] to DB", account);
         try {
