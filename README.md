@@ -35,6 +35,46 @@ We may change the frequency of the job on the basis of the number of requests.
 
 A sample of the system working: 
 ![Double Spend Example](img/doubleSpendScene.png?raw=true "Double Spend Example")
+
+Running the program requires a database "interview" setup with empty tables "accounts" and "transactions".
+
+## Tests
+The project includes a [Test Suite](/src/test/java/com/circle/ServicesTest.java) to test [AccountService]() and [TransactionService](). 
+Tests also include the [ProcessTransactionsJob](), explicitly testing the double spend scenario. 
+
+Tests are run automatically on server startup.
+
+Running the test requires a database "test" setup with empty tables "accounts" and "transactions".
+
+## Create Table Commands
+### accounts
+```postgresql
+create table accounts(
+    id uuid primary key,
+    name varchar(70),
+    email varchar(256) unique,
+    balance decimal(15,2),
+    created_at timestamp
+);
+```
+### transactions
+```postgresql
+create table transactions(
+    id uuid primary key,
+    sender_id uuid,
+    receiver_id uuid,
+    amount decimal(15,2),
+    status varchar(20),
+    created_at timestamp,
+    CONSTRAINT fk_sender_account
+        FOREIGN KEY(sender_id)
+        REFERENCES accounts(id),
+    CONSTRAINT fk_receiver_account
+        FOREIGN KEY(receiver_id)
+        REFERENCES accounts(id)
+);
+```
+
 ## APIs
 
 ### Accounts
