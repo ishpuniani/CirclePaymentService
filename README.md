@@ -78,7 +78,7 @@ create table transactions(
 ## APIs
 
 ### Accounts
-#### Create Account:
+#### Create Account
 Request: 
 ```shell script
 curl --location --request POST 'localhost:8080/accounts' \
@@ -101,7 +101,7 @@ Response: JSON object of the created account.
 }
 ```
 
-#### Get Account:
+#### Get Account
 Request:  
 ```shell script
 curl --location --request GET 'localhost:8080/accounts/73a2d70e-09d8-4c4e-853b-c80d5d3dbb24'
