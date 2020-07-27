@@ -1,4 +1,4 @@
-# CirclePaymentsService (Java)
+# CirclePaymentService (Java)
 
 This is an environment check for a Circle Internet Financial interview problem in Java.  You have probably been given this folder in advance of an interview with Circle to make sure that the actual interview problem will run on your development machine during the interview.
 
