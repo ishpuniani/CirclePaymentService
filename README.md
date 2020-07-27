@@ -118,7 +118,7 @@ Response: JSON object of the account
     "balance": 10000.0
 }
 ```
-
+### Transactions
 #### Add Transaction
 Request: 
 ```shell script
