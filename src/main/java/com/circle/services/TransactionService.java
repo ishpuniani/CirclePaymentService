@@ -1,6 +1,5 @@
 package com.circle.services;
 
-import com.circle.models.Account;
 import com.circle.models.Transaction;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +48,6 @@ public class TransactionService {
             ObjectMapper objectMapper = new ObjectMapper();
             Transaction transaction = objectMapper.convertValue(result, Transaction.class);
             objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
-            handle.close();
             if (transaction == null) {
                 throw new IllegalArgumentException("Unable to find transaction by ID: " + id);
             }
@@ -57,6 +55,8 @@ public class TransactionService {
         } catch (Exception exception) {
             logger.error("Unable to find transaction, pleases check the transaction id", exception.getCause());
             throw exception;
+        } finally {
+            handle.close();
         }
     }
 
@@ -66,21 +66,24 @@ public class TransactionService {
      * @return list of transaction objects of the input status.
      */
     public List<Transaction> getTransactionsByStatus(Transaction.Status status) {
-        List<Transaction> transactions = new ArrayList<>();
-        String query = "SELECT * from transactions WHERE STATUS = ?";
+        logger.info("Getting transactions by status:: " + status.getValue());
         Handle handle = dbi.open();
+        String query = "SELECT * from transactions WHERE STATUS = ? order by created_at";
         try {
+            List<Transaction> transactions = new ArrayList<>();
             List<Map<String, Object>> results = handle.createQuery(query).bind(0, status.getValue()).list();
             ObjectMapper objectMapper = new ObjectMapper();
             for(Map<String, Object> row : results) {
                 Transaction transaction = objectMapper.convertValue(row, Transaction.class);
                 transactions.add(transaction);
             }
+            return transactions;
         } catch (Exception exception) {
             logger.error("Unable to find transactions, pleases check the status", exception.getCause());
             throw exception;
+        } finally {
+            handle.close();
         }
-        return transactions;
     }
 
     /**

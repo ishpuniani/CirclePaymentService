@@ -48,7 +48,6 @@ public class AccountService {
             ObjectMapper objectMapper = new ObjectMapper();
 //            objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
             Account account = objectMapper.convertValue(result, Account.class);
-            handle.close();
             if (account == null) {
                 throw new IllegalArgumentException("Unable to find account by ID: " + id);
             }
@@ -57,6 +56,8 @@ public class AccountService {
         } catch (Exception exception) {
             logger.error("Unable to find account, pleases check the account id", exception.getCause());
             throw exception;
+        } finally {
+            handle.close();
         }
     }
 
@@ -74,7 +75,6 @@ public class AccountService {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
             Account account = objectMapper.convertValue(result, Account.class);
-            handle.close();
             if (account == null) {
                 throw new IllegalArgumentException("Unable to find account by email: " + email);
             }
@@ -82,6 +82,8 @@ public class AccountService {
         } catch (Exception exception) {
             logger.error("Unable to find account, pleases check the account id", exception.getCause());
             throw exception;
+        } finally {
+            handle.close();
         }
     }
 
